@@ -38,7 +38,7 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
     {
         "fr-FR" or "fr-CA" => $"Aló {name}, como ça va?",
         "en-US" or "en-GB" => $"Hello {name}, how are you?",
-        "es-ES" => $"Hola tío, vaya vaya con que {name}",
+        "es-ES" => $"Hola tío, vaya vaya, con que {name}",
         "es-MX" => $"Hola {name}, ¿cómo te va?"
     };
 #pragma warning enable
@@ -123,6 +123,7 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
     // synthesizer.SetOutputToWaveFile("out.wav");
     synthesizer.SetOutputToDefaultAudioDevice();
+
     synthesizer.Speak(promptBuilder);
     return true;
 }
