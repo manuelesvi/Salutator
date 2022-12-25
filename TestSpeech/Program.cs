@@ -119,8 +119,9 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
 static string GetPersonName(VoiceInfo vInfo)
 {
-    var name = vInfo.Name.Replace("Microsoft", null);
-    name = name.Replace("Desktop", null);
+    var name = vInfo.Name.Replace("Desktop", string.Empty);
+    name = name.Replace("Microsoft", string.Empty);
+    
     name = name.Trim();
     return name;
 }
