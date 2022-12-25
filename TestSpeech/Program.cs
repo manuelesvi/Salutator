@@ -27,6 +27,13 @@ static string GetSalutes(VoiceInfo vInfo, int anio) => vInfo.Culture.Name switch
     "en-US" or "en-GB" or _ => $"Merry Christmas and Happy {anio}",
 };
 
+static string GetFrenchSalute() =>
+    (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21
+    ? "bon soirée" // 3pm-9pm -> tarde(s)
+    : DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 4
+        ? "bon nuit" // 9pm-4am -> noche(s) o dia(s)
+        : "bonjour");
+
 static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 {
     var promptBuilder = new PromptBuilder();
@@ -96,13 +103,6 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     return promptBuilder;
 }
-
-static string GetFrenchSalute() =>
-    (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21
-    ? "bon soirée" // 3pm-9pm -> tarde(s)
-    : DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 4
-        ? "bon nuit" // 9pm-4am -> noche(s) o dia(s)
-        : "bonjour");
 
 static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
 {
