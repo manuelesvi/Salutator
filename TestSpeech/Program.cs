@@ -17,7 +17,7 @@ while (true)
     Console.WriteLine();
     Console.WriteLine();
 }
-#pragma warning restore CA1416
+
 return;
 
 static string GetSalutes(VoiceInfo vInfo, int anio) => vInfo.Culture.Name switch
@@ -80,7 +80,7 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     if (vInfo.Culture.Name != "es-ES")
     {
-        promptBuilder.StartVoice(Constants.Espania);
+        promptBuilder.StartVoice(Globals.Espania);
     }
 
     promptBuilder.StartStyle(new PromptStyle
@@ -169,7 +169,7 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
     string filename = string.Format(
         "{0:yyyy}{0:MM}{0:dd}{0:HH}{0:mm}{0:ss}_{1}.wav",
         DateTime.Now,
-        Service.Reproductions++);
+        Globals.Reproductions++);
 
     synthesizer.SetOutputToWaveFile(filename);
     synthesizer.Speak(promptBuilder);
@@ -179,12 +179,13 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
     return true;
 }
 
-public static class Constants
+static class Globals
 {
     public static CultureInfo Espania => CultureInfo.GetCultureInfo("es-ES", "es");
+    internal static int Reproductions { get; set; } = 1;
 }
 
-public struct LanguageRegion
+struct LanguageRegion
 {
     private CultureInfo cultureInfo;
     public string Region;
@@ -200,3 +201,4 @@ public struct LanguageRegion
         }
     }
 }
+#pragma warning restore CA1416
