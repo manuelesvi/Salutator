@@ -9,7 +9,7 @@ while (true)
     if (!PrintMenu(synthesizer)) break;
 
     Console.Write("Repeat? [Y/N] (Default N): ");
-    
+
     var repeat = Console.ReadKey();
     if (repeat.Key != ConsoleKey.Y) break;
 
@@ -82,30 +82,29 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
     promptBuilder.StartStyle(style);
 
     promptBuilder.AppendText(GetSalutes(vInfo, anio));
-
-    //promptBuilder.StartVoice(vInfo);
-
-    promptBuilder.AppendBreak(PromptBreak.Small);
-    promptBuilder.AppendText(GetBye(vInfo));
-
     promptBuilder.EndStyle();
+
+    promptBuilder.AppendBreak(PromptBreak.Large);
+
+    promptBuilder.StartStyle(new PromptStyle { Emphasis = PromptEmphasis.Reduced });
+    promptBuilder.AppendText($"{GetBye(vInfo, name)}");
+    promptBuilder.EndStyle();
+    // promptBuilder.AppendBreak();
+
     promptBuilder.EndVoice();
-
-    //promptBuilder.EndVoice();
-
 
     return promptBuilder;
 }
 
-static string GetBye(VoiceInfo vInfo) => vInfo.Culture.Name switch 
+static string GetBye(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
 {
-    "es-MX" => "Adiós!",
-    "es-ES" => "Anda tío!",
+    "es-MX" => $"¡Adiós {name}!",
+    "es-ES" => $"Anda {name} hasta pronto!",
 
-    "fr-FR" => DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21 ? "bon soirée" : 
-    DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 3 ? "bon nuit" : "bonjour",
+    "fr-FR" => (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21 ? "bon soirée" :
+    DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 3 ? "bon nuit" : "bonjour") + " " + name,
 
-    "en-US" or _ => "BYE!",
+    "en-US" or _ => $"Bye {name}, have a wonderful " + (DateTime.Now.Hour > 18 ? "night" : "day"),
 };
 
 static bool PrintMenu(SpeechSynthesizer synthesizer)
