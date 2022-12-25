@@ -106,7 +106,7 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
         Volume = PromptVolume.ExtraLoud
     };
 
-    var estructura = new LanguageRegion { Culture = vInfo.Culture };
+    var estructura = LanguageRegion.Create(vInfo.Culture);
     style.Rate = estructura switch
     {
         { Language: "es", Region: "es-MX" } => PromptRate.Fast,
@@ -199,9 +199,14 @@ struct LanguageRegion
         set
         {
             cultureInfo = value;
-            Language = cultureInfo.TwoLetterISOLanguageName;
-            Region = cultureInfo.Name;
+            
         }
     }
+
+    public static LanguageRegion Create(CultureInfo cultureInfo) => new LanguageRegion
+    {
+        Language = cultureInfo.TwoLetterISOLanguageName,
+        Region = cultureInfo.Name
+    };
 }
 #pragma warning restore CA1416
