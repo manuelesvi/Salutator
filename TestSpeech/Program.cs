@@ -34,6 +34,28 @@ static string GetFrenchSalute() =>
         ? "bon nuit" // 9pm-4am -> noche(s) o dia(s)
         : "bonjour");
 
+static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
+{
+    "es-MX" => $"¡Adiós {name}!",
+    "es-ES" => $"Anda {name}, hasta pronto!",
+    "fr-FR" or "fr-CA" => $"{GetFrenchSalute()} {name}",
+    "en-US" or _ => $"Bye {name}, have a wonderful " + ( // en-US by default (_)
+        DateTime.Now.Hour < 3 ? "night" :
+        DateTime.Now.Hour < 10 ? "morning" +
+        "" :
+        DateTime.Now.Hour < 17 ? "day" :
+        DateTime.Now.Hour < 20 ? "evening" : "night"),
+};
+
+static string GetPersonName(VoiceInfo vInfo)
+{
+    var name = vInfo.Name.Replace("Desktop", string.Empty);
+    name = name.Replace("Microsoft", string.Empty);
+
+    name = name.Trim();
+    return name;
+}
+
 static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 {
     var promptBuilder = new PromptBuilder();
@@ -104,19 +126,6 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
     return promptBuilder;
 }
 
-static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
-{
-    "es-MX" => $"¡Adiós {name}!",
-    "es-ES" => $"Anda {name}, hasta pronto!",
-    "fr-FR" or "fr-CA" => $"{GetFrenchSalute()} {name}",
-    "en-US" or _ => $"Bye {name}, have a wonderful " + ( // en-US by default (_)
-        DateTime.Now.Hour < 3 ? "night" :
-        DateTime.Now.Hour < 10 ? "morning" +
-        "" :
-        DateTime.Now.Hour < 17 ? "day" :
-        DateTime.Now.Hour < 20 ? "evening" : "night"),
-};
-
 static bool PrintMenu(SpeechSynthesizer synthesizer)
 {
     Console.WriteLine("Select Voice:");
@@ -155,15 +164,6 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
     synthesizer.SetOutputToDefaultAudioDevice();
     synthesizer.Speak(promptBuilder);
     return true;
-}
-
-static string GetPersonName(VoiceInfo vInfo)
-{
-    var name = vInfo.Name.Replace("Desktop", string.Empty);
-    name = name.Replace("Microsoft", string.Empty);
-
-    name = name.Trim();
-    return name;
 }
 
 public static class Constants
