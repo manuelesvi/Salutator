@@ -16,7 +16,7 @@ while (true)
     Console.WriteLine();
     Console.WriteLine();
 }
-
+#pragma warning restore CA1416
 return;
 
 static string GetSalutes(VoiceInfo vInfo, int anio) => vInfo.Culture.Name switch
@@ -27,7 +27,7 @@ static string GetSalutes(VoiceInfo vInfo, int anio) => vInfo.Culture.Name switch
     "en-US" or "en-GB" or _ => $"Merry Christmas and Happy {anio}",
 };
 
-static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInfo vInfo, int anio)
+static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 {
     var promptBuilder = new PromptBuilder();
     promptBuilder.StartVoice(vInfo.Name);
@@ -88,7 +88,6 @@ static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInf
     promptBuilder.EndStyle();
 
     return promptBuilder;
-#pragma warning restore CA1416
 }
 
 static bool PrintMenu(SpeechSynthesizer synthesizer)
@@ -120,7 +119,7 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
     int anio = Convert.ToInt32(line);
     var vInfo = voiceOpt[opt].Item2;
-    var promptBuilder = BuildSalutePrompt(voiceOpt, vInfo, anio);
+    var promptBuilder = BuildSalutePrompt(vInfo, anio);
 
     // synthesizer.SetOutputToWaveFile("out.wav");
     synthesizer.SetOutputToDefaultAudioDevice();
