@@ -54,7 +54,7 @@ static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInf
         Volume = PromptVolume.Loud
     });
 
-    promptBuilder.StartVoice(Constants.esES);
+    promptBuilder.StartVoice(Constants.España);
     promptBuilder.AppendText("Muy bien don Quijote, ¡gracias!",
         PromptEmphasis.Moderate);
     promptBuilder.EndVoice();
@@ -144,7 +144,7 @@ static string GetPersonName(VoiceInfo vInfo)
 
 public static class Constants
 {
-    public static CultureInfo esES => CultureInfo.GetCultureInfo("es-ES");
+    public static CultureInfo España => CultureInfo.GetCultureInfo("es-ES");
 }
 
 public struct LanguageRegion
