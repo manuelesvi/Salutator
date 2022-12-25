@@ -146,6 +146,7 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
     int anio = Convert.ToInt32(line);
     var vInfo = voiceOpt[opt].Item2;
+
     var promptBuilder = BuildSalutePrompt(vInfo, anio);
 
     synthesizer.SetOutputToWaveFile("out.wav");
