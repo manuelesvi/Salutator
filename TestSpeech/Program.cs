@@ -10,8 +10,7 @@ while (true)
 
     Console.Write("Repeat? [Y/N] (Default N): ");
     var repeat = Console.ReadKey();
-    if (repeat.Key != ConsoleKey.Y)
-        break;
+    if (repeat.Key != ConsoleKey.Y) break;
 
     Console.WriteLine();
     Console.WriteLine();
