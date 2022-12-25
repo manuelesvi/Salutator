@@ -9,6 +9,7 @@ while (true)
     if (!PrintMenu(synthesizer)) break;
 
     Console.Write("Repeat? [Y/N] (Default N): ");
+    
     var repeat = Console.ReadKey();
     if (repeat.Key != ConsoleKey.Y) break;
 
@@ -69,12 +70,7 @@ static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInf
         Volume = PromptVolume.ExtraLoud
     };
 
-    var estructura = new LanguageRegion
-    {
-        Culture = vInfo.Culture
-    };
-
-
+    var estructura = new LanguageRegion { Culture = vInfo.Culture };
     style.Rate = estructura switch
     {
         { Language: "es", Region: "es-MX" } => PromptRate.Fast,
@@ -83,7 +79,6 @@ static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInf
         { Language: "en" } => PromptRate.Slow,
         _ => PromptRate.Medium, // default
     };
-
     promptBuilder.StartStyle(style);
 
     promptBuilder.StartVoice(vInfo);
