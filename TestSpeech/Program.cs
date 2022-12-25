@@ -1,6 +1,5 @@
 ﻿using System.Speech.Synthesis;
 using System.Globalization;
-using TestSpeech;
 
 #pragma warning disable CA1416
 var synthesizer = new SpeechSynthesizer();
@@ -18,7 +17,7 @@ while (true)
     Console.WriteLine();
 }
 
-return;
+return; //exit
 
 static string GetSalutes(VoiceInfo vInfo, int anio) => vInfo.Culture.Name switch
 {
@@ -50,9 +49,8 @@ static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name swit
 
 static string GetPersonName(VoiceInfo vInfo)
 {
-    var name = vInfo.Name.Replace("Desktop", string.Empty);
+    string name = vInfo.Name.Replace("Desktop", string.Empty);
     name = name.Replace("Microsoft", string.Empty);
-
     name = name.Trim();
     return name;
 }
@@ -144,6 +142,11 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
     {
         Console.WriteLine($"{i++}.- {GetPersonName(v.VoiceInfo)} [{v.VoiceInfo.Culture.DisplayName}]");
         voiceOpt.Add((i, v.VoiceInfo));
+        if (v.VoiceInfo.Culture.Name == "es-ES" 
+            && Globals.Espania is null)
+        {
+            Globals.Espania = v.VoiceInfo;
+        }
     }
 
     Console.WriteLine();
@@ -181,7 +184,7 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
 static class Globals
 {
-    public static CultureInfo Espania => CultureInfo.GetCultureInfo("es-ES", "es");
+    public static VoiceInfo Espania { get; set; }
     internal static int Reproductions { get; set; } = 1;
 }
 
