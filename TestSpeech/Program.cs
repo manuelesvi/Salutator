@@ -1,7 +1,5 @@
 ﻿using System.Speech.Synthesis;
 using System.Globalization;
-using System.Diagnostics;
-using System.Reflection.Metadata;
 
 #pragma warning disable CA1416
 var synthesizer = new SpeechSynthesizer();
@@ -21,44 +19,15 @@ while (true)
 
 return;
 
-static bool PrintMenu(SpeechSynthesizer synthesizer)
+static string GetSalutes(VoiceInfo vInfo, int anio) => vInfo.Culture.Name switch
 {
-    Console.WriteLine("Select Voice:");
-    var voices = synthesizer.GetInstalledVoices();
-    int i = 1;
-    var voiceOpt = new List<ValueTuple<int, VoiceInfo>>();
-    foreach (var v in voices)
-    {
-        Console.WriteLine($"{i++}.- {GetPersonName(v.VoiceInfo)} [{v.VoiceInfo.Culture.DisplayName}]");
-        voiceOpt.Add((i, v.VoiceInfo));
-    }
+    "es-ES" => $"¡Feliz Navidad y próspero año {anio} desde España!",
+    "es-MX" => $"¡Feliz Navidad y próspero año {anio}!",
+    "fr-FR" or "fr-CA" => $"Joyeux Noël et bonne année {anio}",
+    "en-US" or "en-GB" or _ => $"Merry Christmas and Happy {anio}",
+};
 
-    Console.WriteLine();
-    Console.WriteLine("Q.- Quit safely");
-
-    Console.Write("Option: ");
-
-    var line = Console.ReadLine().ToUpper();
-    if (line == "Q") return false;
-
-    var opt = Convert.ToInt32(line) - 1;
-
-    Console.Write($"Año [{DateTime.Today.Year + 1}]: ");
-    line = Console.ReadLine();
-    line = !string.IsNullOrWhiteSpace(line) ? line
-        : (DateTime.Today.Year + 1).ToString();
-
-    int anio = Convert.ToInt32(line);
-    var vInfo = voiceOpt[opt].Item2;
-    var promptBuilder = GetPromptBuilder(voiceOpt, vInfo, anio);
-
-    // synthesizer.SetOutputToWaveFile("out.wav");
-    synthesizer.SetOutputToDefaultAudioDevice();
-    synthesizer.Speak(promptBuilder);
-    return true;
-}
-
-static PromptBuilder GetPromptBuilder(List<(int, VoiceInfo)> voiceOpt, VoiceInfo vInfo, int anio)
+static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInfo vInfo, int anio)
 {
     var promptBuilder = new PromptBuilder();
     promptBuilder.StartVoice(vInfo.Name);
@@ -112,13 +81,42 @@ static PromptBuilder GetPromptBuilder(List<(int, VoiceInfo)> voiceOpt, VoiceInfo
 #pragma warning restore CA1416
 }
 
-static string GetSalutes(VoiceInfo vInfo, int anio) => vInfo.Culture.Name switch
+static bool PrintMenu(SpeechSynthesizer synthesizer)
 {
-    "es-ES" => $"¡Feliz Navidad y próspero año {anio} desde España!",
-    "es-MX" => $"¡Feliz Navidad y próspero año {anio}!",
-    "fr-FR" or "fr-CA" => $"Joyeux Noël et bonne année {anio}",
-    "en-US" or "en-GB" or _ => $"Merry Christmas and Happy {anio}",
-};
+    Console.WriteLine("Select Voice:");
+    var voices = synthesizer.GetInstalledVoices();
+    int i = 1;
+    var voiceOpt = new List<ValueTuple<int, VoiceInfo>>();
+    foreach (var v in voices)
+    {
+        Console.WriteLine($"{i++}.- {GetPersonName(v.VoiceInfo)} [{v.VoiceInfo.Culture.DisplayName}]");
+        voiceOpt.Add((i, v.VoiceInfo));
+    }
+
+    Console.WriteLine();
+    Console.WriteLine("Q.- Quit safely");
+
+    Console.Write("Option: ");
+
+    var line = Console.ReadLine().ToUpper();
+    if (line == "Q") return false;
+
+    var opt = Convert.ToInt32(line) - 1;
+
+    Console.Write($"Año [{DateTime.Today.Year + 1}]: ");
+    line = Console.ReadLine();
+    line = !string.IsNullOrWhiteSpace(line) ? line
+        : (DateTime.Today.Year + 1).ToString();
+
+    int anio = Convert.ToInt32(line);
+    var vInfo = voiceOpt[opt].Item2;
+    var promptBuilder = BuildSalutePrompt(voiceOpt, vInfo, anio);
+
+    // synthesizer.SetOutputToWaveFile("out.wav");
+    synthesizer.SetOutputToDefaultAudioDevice();
+    synthesizer.Speak(promptBuilder);
+    return true;
+}
 
 static string GetPersonName(VoiceInfo vInfo)
 {
