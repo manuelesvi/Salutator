@@ -87,7 +87,7 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
     promptBuilder.AppendBreak(PromptBreak.Large);
 
     promptBuilder.StartStyle(new PromptStyle { Emphasis = PromptEmphasis.Reduced });
-    promptBuilder.AppendText($"{GetBye(vInfo, name)}");
+    promptBuilder.AppendText(ByeSalute(vInfo, name));
     promptBuilder.EndStyle();
     // promptBuilder.AppendBreak();
 
@@ -96,7 +96,7 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
     return promptBuilder;
 }
 
-static string GetBye(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
+static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
 {
     "es-MX" => $"¡Adiós {name}!",
     "es-ES" => $"Anda {name} hasta pronto!",
@@ -106,7 +106,11 @@ static string GetBye(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
     : "bonjour") // dias
     + " " + name,
 
-    "en-US" or _ => $"Bye {name}, have a wonderful " + (DateTime.Now.Hour > 18 ? "night" : "day"),
+    "en-US" or _ => $"Bye {name}, have a wonderful " + (
+    DateTime.Now.Hour < 14 ? "day" : 
+    DateTime.Now.Hour < 18 ? "evening" :
+    DateTime.Now.Hour >= 18 && DateTime.Now.Hour <= 6 
+        ? "night" : "day"),
 };
 
 static bool PrintMenu(SpeechSynthesizer synthesizer)
