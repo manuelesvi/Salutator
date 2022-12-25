@@ -83,11 +83,30 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     promptBuilder.AppendText(GetSalutes(vInfo, anio));
 
+    //promptBuilder.StartVoice(vInfo);
+
+    promptBuilder.AppendBreak(PromptBreak.Small);
+    promptBuilder.AppendText(GetBye(vInfo));
+
     promptBuilder.EndStyle();
     promptBuilder.EndVoice();
 
+    //promptBuilder.EndVoice();
+
+
     return promptBuilder;
 }
+
+static string GetBye(VoiceInfo vInfo) => vInfo.Culture.Name switch 
+{
+    "es-MX" => "Adiós!",
+    "es-ES" => "Anda tío!",
+
+    "fr-FR" => DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21 ? "bon soirée" : 
+    DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 3 ? "bon nuit" : "bonjour",
+
+    "en-US" or _ => "BYE!",
+};
 
 static bool PrintMenu(SpeechSynthesizer synthesizer)
 {
@@ -120,9 +139,10 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
     var vInfo = voiceOpt[opt].Item2;
     var promptBuilder = BuildSalutePrompt(vInfo, anio);
 
-    // synthesizer.SetOutputToWaveFile("out.wav");
-    synthesizer.SetOutputToDefaultAudioDevice();
+    synthesizer.SetOutputToWaveFile("out.wav");
+    synthesizer.Speak(promptBuilder);
 
+    synthesizer.SetOutputToDefaultAudioDevice();
     synthesizer.Speak(promptBuilder);
     return true;
 }
