@@ -101,8 +101,10 @@ static string GetBye(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
     "es-MX" => $"¡Adiós {name}!",
     "es-ES" => $"Anda {name} hasta pronto!",
 
-    "fr-FR" => (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21 ? "bon soirée" :
-    DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 3 ? "bon nuit" : "bonjour") + " " + name,
+    "fr-FR" => (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21 ? "bon soirée" // 3pm-9pm -> tardes
+    : DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 3 ? "bon nuit" // 9pm-3am -> noches
+    : "bonjour") // dias
+    + " " + name,
 
     "en-US" or _ => $"Bye {name}, have a wonderful " + (DateTime.Now.Hour > 18 ? "night" : "day"),
 };
