@@ -1,5 +1,6 @@
 ﻿using System.Speech.Synthesis;
 using System.Globalization;
+using TestSpeech;
 
 #pragma warning disable CA1416
 var synthesizer = new SpeechSynthesizer();
@@ -77,7 +78,10 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     promptBuilder.AppendBreak(PromptBreak.Small);
 
-    promptBuilder.StartVoice(Constants.Espania);
+    if (vInfo.Culture.Name != "es-ES")
+    {
+        promptBuilder.StartVoice(Constants.Espania);
+    }
 
     promptBuilder.StartStyle(new PromptStyle
     {
@@ -85,10 +89,15 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
         Rate = PromptRate.Slow,
         Volume = PromptVolume.Loud
     });
-    promptBuilder.AppendText("Muy bien don Quijote, ¡gracias!",
-        PromptEmphasis.Moderate);
+    promptBuilder.AppendText("Muy bien don Quijote, ¡gracias!");
+    //promptBuilder.AppendText("Muy bien don Quijote, ¡gracias!",
+    //    PromptEmphasis.Moderate);
     promptBuilder.EndStyle();
-    promptBuilder.EndVoice();
+
+    if (vInfo.Culture.Name != "es-ES")
+    {
+        promptBuilder.EndVoice();
+    }
 
     promptBuilder.AppendBreak(PromptBreak.Small);
 
@@ -119,7 +128,6 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
     promptBuilder.StartStyle(new PromptStyle { Emphasis = PromptEmphasis.Reduced });
     promptBuilder.AppendText(ByeSalute(vInfo, name));
     promptBuilder.EndStyle();
-    // promptBuilder.AppendBreak();
 
     promptBuilder.EndVoice();
 
@@ -158,7 +166,12 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
     var promptBuilder = BuildSalutePrompt(vInfo, anio);
 
-    synthesizer.SetOutputToWaveFile("out.wav");
+    string filename = string.Format(
+        "{0:yyyy}{0:MM}{0:dd}{0:HH}{0:mm}{0:ss}_{1}.wav",
+        DateTime.Now,
+        Service.Reproductions++);
+
+    synthesizer.SetOutputToWaveFile(filename);
     synthesizer.Speak(promptBuilder);
 
     synthesizer.SetOutputToDefaultAudioDevice();
@@ -168,7 +181,7 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
 public static class Constants
 {
-    public static CultureInfo Espania => CultureInfo.GetCultureInfo("es-ES");
+    public static CultureInfo Espania => CultureInfo.GetCultureInfo("es-ES", "es");
 }
 
 public struct LanguageRegion
