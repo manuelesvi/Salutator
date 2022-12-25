@@ -50,7 +50,7 @@ static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInf
     promptBuilder.StartStyle(new PromptStyle
     {
         Emphasis = PromptEmphasis.Reduced,
-        Rate = PromptRate.Medium,
+        Rate = PromptRate.Slow,
         Volume = PromptVolume.Loud
     });
 
@@ -62,18 +62,34 @@ static PromptBuilder BuildSalutePrompt(List<(int, VoiceInfo)> voiceOpt, VoiceInf
     promptBuilder.EndStyle();
     promptBuilder.AppendBreak(PromptBreak.Small);
 
-    promptBuilder.StartStyle(new PromptStyle
+    var style = new PromptStyle
     {
         Emphasis = PromptEmphasis.None,
-        Rate = PromptRate.Fast,
+        Rate = PromptRate.NotSet,
         Volume = PromptVolume.ExtraLoud
-    });
+    };
+
+    var estructura = new LanguageRegion
+    {
+        Culture = vInfo.Culture
+    };
+
+
+    style.Rate = estructura switch
+    {
+        { Language: "es", Region: "es-MX" } => PromptRate.Fast,
+        { Language: "es" } => PromptRate.Medium,
+        { Language: "fr" } => PromptRate.Medium,
+        { Language: "en" } => PromptRate.Slow,
+        _ => PromptRate.Medium, // default
+    };
+
+    promptBuilder.StartStyle(style);
 
     promptBuilder.StartVoice(vInfo);
-
     promptBuilder.AppendText(GetSalutes(vInfo, anio));
-
     promptBuilder.EndVoice();
+
     promptBuilder.EndStyle();
 
     return promptBuilder;
@@ -121,7 +137,7 @@ static string GetPersonName(VoiceInfo vInfo)
 {
     var name = vInfo.Name.Replace("Desktop", string.Empty);
     name = name.Replace("Microsoft", string.Empty);
-    
+
     name = name.Trim();
     return name;
 }
@@ -129,4 +145,21 @@ static string GetPersonName(VoiceInfo vInfo)
 public static class Constants
 {
     public static CultureInfo esES => CultureInfo.GetCultureInfo("es-ES");
+}
+
+public struct LanguageRegion
+{
+    private CultureInfo cultureInfo;
+    public string Region;
+    public string Language;
+    public CultureInfo Culture
+    {
+        get => cultureInfo;
+        set
+        {
+            cultureInfo = value;
+            Language = cultureInfo.TwoLetterISOLanguageName;
+            Region = cultureInfo.Name;
+        }
+    }
 }
