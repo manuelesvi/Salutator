@@ -95,22 +95,24 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     return promptBuilder;
 }
+static string GetFrenchSalute() => 
+    (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21
+    ? "bon soirée" // 3pm-9pm -> tarde(s)
+    : DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 4 
+        ? "bon nuit" // 9pm-4am -> noche(s)
+        : "bonjour"); // dia(s)
 
 static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
 {
     "es-MX" => $"¡Adiós {name}!",
-    "es-ES" => $"Anda {name} hasta pronto!",
-
-    "fr-FR" => (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21 ? "bon soirée" // 3pm-9pm -> tardes
-    : DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 4 ? "bon nuit" // 9pm-4am -> noches
-    : "bonjour") // dias
-    + " " + name,
-
-    "en-US" or _ => $"Bye {name}, have a wonderful " + (
-    DateTime.Now.Hour < 14 ? "day" : 
-    DateTime.Now.Hour < 18 ? "evening" :
-    DateTime.Now.Hour >= 18 && DateTime.Now.Hour <= 6 
-        ? "night" : "day"),
+    "es-ES" => $"Anda {name}, hasta pronto!",
+    "fr-FR" or "fr-CA" => $"{GetFrenchSalute()} {name}",
+    "en-US" or _ => $"Bye {name}, have a wonderful " + ( // en-US by default (_)
+        DateTime.Now.Hour < 3 ? "night" :
+        DateTime.Now.Hour < 10 ? "morning" +
+        "" : 
+        DateTime.Now.Hour < 17 ? "day" :
+        DateTime.Now.Hour < 20 ? "evening" : "night"),        
 };
 
 static bool PrintMenu(SpeechSynthesizer synthesizer)
