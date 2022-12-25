@@ -48,19 +48,18 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     promptBuilder.AppendBreak(PromptBreak.Small);
 
+    promptBuilder.StartVoice(Constants.España);
     promptBuilder.StartStyle(new PromptStyle
     {
         Emphasis = PromptEmphasis.Reduced,
         Rate = PromptRate.Slow,
         Volume = PromptVolume.Loud
     });
-
-    promptBuilder.StartVoice(Constants.España);
     promptBuilder.AppendText("Muy bien don Quijote, ¡gracias!",
         PromptEmphasis.Moderate);
+    promptBuilder.EndStyle();
     promptBuilder.EndVoice();
 
-    promptBuilder.EndStyle();
     promptBuilder.AppendBreak(PromptBreak.Small);
 
     var style = new PromptStyle
@@ -79,13 +78,13 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
         { Language: "en" } => PromptRate.Slow,
         _ => PromptRate.Medium, // default
     };
+    promptBuilder.StartVoice(vInfo);
     promptBuilder.StartStyle(style);
 
-    promptBuilder.StartVoice(vInfo);
     promptBuilder.AppendText(GetSalutes(vInfo, anio));
-    promptBuilder.EndVoice();
 
     promptBuilder.EndStyle();
+    promptBuilder.EndVoice();
 
     return promptBuilder;
 }
