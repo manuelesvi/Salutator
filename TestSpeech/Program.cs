@@ -190,19 +190,8 @@ static class Globals
 
 struct LanguageRegion
 {
-    private CultureInfo cultureInfo;
     public string Region;
     public string Language;
-    public CultureInfo Culture
-    {
-        get => cultureInfo;
-        set
-        {
-            cultureInfo = value;
-            
-        }
-    }
-
     public static LanguageRegion Create(CultureInfo cultureInfo) => new LanguageRegion
     {
         Language = cultureInfo.TwoLetterISOLanguageName,
