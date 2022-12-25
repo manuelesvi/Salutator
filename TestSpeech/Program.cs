@@ -111,7 +111,7 @@ static bool PrintMenu(SpeechSynthesizer synthesizer)
 
     var opt = Convert.ToInt32(line) - 1;
 
-    Console.Write($"Año [{DateTime.Today.Year + 1}]: ");
+    Console.Write($"Year [{DateTime.Today.Year + 1}]: ");
     line = Console.ReadLine();
     line = !string.IsNullOrWhiteSpace(line) ? line
         : (DateTime.Today.Year + 1).ToString();
