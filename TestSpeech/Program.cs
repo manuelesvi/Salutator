@@ -38,7 +38,7 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
     {
         "fr-FR" or "fr-CA" => $"Aló {name}, como ça va?",
         "en-US" or "en-GB" => $"Hello {name}, how are you?",
-        "es-ES" => $"Hola tío, vaya vaya, con que {name}",
+        "es-ES" => $"Hola tío, vaya vaya, ¿con que {name}?",
         "es-MX" => $"Hola {name}, ¿cómo te va?"
     };
 #pragma warning enable
@@ -48,7 +48,8 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     promptBuilder.AppendBreak(PromptBreak.Small);
 
-    promptBuilder.StartVoice(Constants.España);
+    promptBuilder.StartVoice(Constants.Espania);
+
     promptBuilder.StartStyle(new PromptStyle
     {
         Emphasis = PromptEmphasis.Reduced,
@@ -95,12 +96,13 @@ static PromptBuilder BuildSalutePrompt(VoiceInfo vInfo, int anio)
 
     return promptBuilder;
 }
-static string GetFrenchSalute() => 
+
+static string GetFrenchSalute() =>
     (DateTime.Now.Hour >= 15 || DateTime.Now.Hour < 21
     ? "bon soirée" // 3pm-9pm -> tarde(s)
-    : DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 4 
-        ? "bon nuit" // 9pm-4am -> noche(s)
-        : "bonjour"); // dia(s)
+    : DateTime.Now.Hour >= 21 && DateTime.Now.Hour < 4
+        ? "bon nuit" // 9pm-4am -> noche(s) o dia(s)
+        : "bonjour");
 
 static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name switch
 {
@@ -110,9 +112,9 @@ static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name swit
     "en-US" or _ => $"Bye {name}, have a wonderful " + ( // en-US by default (_)
         DateTime.Now.Hour < 3 ? "night" :
         DateTime.Now.Hour < 10 ? "morning" +
-        "" : 
+        "" :
         DateTime.Now.Hour < 17 ? "day" :
-        DateTime.Now.Hour < 20 ? "evening" : "night"),        
+        DateTime.Now.Hour < 20 ? "evening" : "night"),
 };
 
 static bool PrintMenu(SpeechSynthesizer synthesizer)
@@ -165,7 +167,7 @@ static string GetPersonName(VoiceInfo vInfo)
 
 public static class Constants
 {
-    public static CultureInfo España => CultureInfo.GetCultureInfo("es-ES");
+    public static CultureInfo Espania => CultureInfo.GetCultureInfo("es-ES");
 }
 
 public struct LanguageRegion
