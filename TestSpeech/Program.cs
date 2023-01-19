@@ -41,8 +41,7 @@ static string ByeSalute(VoiceInfo vInfo, string name) => vInfo.Culture.Name swit
     "fr-FR" or "fr-CA" => $"{GetFrenchSalute()} {name}",
     "en-US" or _ => $"Bye {name}, have a wonderful " + ( // en-US by default (_)
         DateTime.Now.Hour < 3 ? "night" :
-        DateTime.Now.Hour < 10 ? "morning" +
-        "" :
+        DateTime.Now.Hour < 10 ? "morning" :
         DateTime.Now.Hour < 17 ? "day" :
         DateTime.Now.Hour < 20 ? "evening" : "night"),
 };
